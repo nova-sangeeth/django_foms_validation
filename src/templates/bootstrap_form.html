@@ -101,8 +101,10 @@
                 <div class="form-group col-md-4">
                     <label for="inputState">Category</label>
                     <select id="inputState" class="form-control" name="category">
-                        <option selected>Choose...</option>
-                        <option>...</option>
+                        <option selected>Choose..</option>
+                        {% for cat in categories %}
+                            <option value="{{ cat }}">{{ cat }}</option>
+                        {% endfor %}
                     </select>
                 </div>
 
@@ -115,6 +117,14 @@
                     </label>
                 </div>
             </div>
+            <div class="form-group">
+                <div class="form-check">
+                    <input class="form-check-input" type="checkbox" id="not_reviewed" name="not_reviewed">
+                    <label class="form-check-label" for="not_reviewed">
+                        Not Reviewed
+                    </label>
+                </div>
+            </div>
             <button type="submit" class="btn btn-primary">Search</button>
 
         </form>
@@ -122,17 +132,18 @@
         <div class="row">
             <ul>
                 {% for jornal in queryset %}
-                    <li>
-                    {{ jornal.title }}
-                    <span>Author: {{ jornal.author.name }}</span>
-                    <span>
-                        {% for cat in jornal.categories.all %}
-                            {{ span }}
+                    <li> Title:
+                        {{ jornal.title }}
+                        <span> | Author: {{ jornal.author.name }}</span>
+                        <span> |  Category
+                            {% for cat in jornal.categories.all %}
+                                {{ cat }}
                             {% endfor %}
                     </span>
-                    <span>Publish date: {{ jornal.publish_date }}</span>
-                    <span>View count: {{ jornal.views }}</span>
-                    <span>Reiviewed: {{ jornal.reviewed }}</span>
+
+                        <span> | Publish date: {{ jornal.publish_date }}</span>
+                        <span> | View count: {{ jornal.views }}</span>
+                        <span> | Reiviewed: {{ jornal.reviewed }}</span>
                     </li>
                     <hr>
                 {% endfor %}

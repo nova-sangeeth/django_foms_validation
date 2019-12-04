@@ -1,5 +1,5 @@
 from django.shortcuts import render
-from .models import Jornal
+from .models import Jornal, Category
 from django.db.models import Q
 
 
@@ -10,6 +10,7 @@ def is_valid_queryparam(param):
 # Create your views here.
 def BootstrapFilterView(request):
     qs = Jornal.objects.all()
+    categories = Category.objects.all()
     title_contains_query = request.GET.get('title_contains')
     id_exact_query = request.GET.get('id_exact')
     title_or_author_query = request.GET.get('title_or_author')
@@ -17,6 +18,9 @@ def BootstrapFilterView(request):
     view_count_max = request.GET.get('view_count_max')
     date_min = request.GET.get('date_min')
     date_max = request.GET.get('date_max')
+    category = request.GET.get('category')
+    reviewed = request.GET.get('reviewed')
+    not_reviewed = request.GET.get('not_reviewed')
 
     if is_valid_queryparam(title_contains_query):
         qs = qs.filter(title__icontains=title_contains_query)
@@ -38,7 +42,18 @@ def BootstrapFilterView(request):
     if is_valid_queryparam(date_max):
         qs = qs.filter(publish_date__lt=date_max)
 
+    if is_valid_queryparam(category) and category != 'Choose..':
+        qs = qs.filter(categories__name=category)
+
+    if reviewed == 'on':
+        qs = qs.filter(reviewed=True)
+    elif not_reviewed =='on':
+        qs = qs.filter(reviewed=False)
+
+
     context = {
-        'queryset': qs
+        'queryset': qs,
+        'categories': categories
+
     }
     return render(request, "bootstrap_form.html", context)
